@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\SuppX.Storage\SuppX.Storage.csproj" />
+    <ProjectReference Include="..\SuppX.Controller\SuppX.Controller.csproj" />
+    <ProjectReference Include="..\SuppX.Domain\SuppX.Domain.csproj" />
+  </ItemGroup>
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+</Project>
