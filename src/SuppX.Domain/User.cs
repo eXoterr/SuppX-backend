@@ -7,6 +7,6 @@ public class User
     public int RoleId { get; set; }
     public string? Login { get; set; }
     public string? Password { get; set; }
-    public DateTime BannedAt { get; set; }
-    public BanReason BanReason { get; set; }
+    public DateTime? BannedAt { get; set; }
+    public BanReason? BanReason { get; set; }
 }

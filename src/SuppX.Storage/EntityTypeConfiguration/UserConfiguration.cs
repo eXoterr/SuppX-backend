@@ -13,6 +13,10 @@ namespace SuppX.Storage.EntityTypeConfiguration
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
+            builder
+            .Property(x => x.RoleId)
+            .HasDefaultValue(0);
+
             builder.HasKey(u => u.Id);
             builder
             .HasOne(x => x.Role)
