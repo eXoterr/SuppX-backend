@@ -1,0 +1,12 @@
+version: "3"
+
+tasks:
+  migrate:
+    cmds:
+      - dotnet ef database update --startup-project src/SuppX.App/SuppX.App.csproj --project src/SuppX.Storage/SuppX.Storage.csproj
+  rollback:
+    cmds:
+      - dotnet ef database update 0 --startup-project src/SuppX.App/SuppX.App.csproj --project src/SuppX.Storage/SuppX.Storage.csproj
+  migration:add:
+    cmds:
+      - dotnet ef migrations add {{.CLI_ARGS}} --startup-project src/SuppX.App/SuppX.App.csproj --project src/SuppX.Storage/SuppX.Storage.csproj

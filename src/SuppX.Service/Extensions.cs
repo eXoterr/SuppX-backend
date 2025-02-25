@@ -2,7 +2,7 @@ using System;
 using Microsoft.Extensions.DependencyInjection;
 using SuppX.Service;
 
-namespace SuppX.Controller;
+namespace SuppX.Service;
 
 public static class Extensions
 {

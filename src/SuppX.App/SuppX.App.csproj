@@ -1,7 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <ItemGroup>
-    <ProjectReference Include="../SuppX.Core/SuppX.Utils.csproj" />
+    <ProjectReference Include="..\SuppX.Domain\SuppX.Domain.csproj" />
+    <ProjectReference Include="..\SuppX.Utils\SuppX.Utils.csproj" />
+    <ProjectReference Include="..\SuppX.Service\SuppX.Service.csproj" />
+    <ProjectReference Include="..\SuppX.Storage\SuppX.Storage.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -3,7 +3,7 @@ using SuppX.Domain;
 
 namespace SuppX.Storage.Repository;
 
-internal class UserRepository(AppContext context) : IUserRepository
+internal class UserRepository(ApplicationContext context) : IUserRepository
 {
     public async Task CreateAsync(User user, CancellationToken cancellationToken = default)
     {

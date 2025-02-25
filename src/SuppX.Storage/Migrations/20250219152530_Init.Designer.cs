@@ -11,7 +11,7 @@ using SuppX.Storage;
 
 namespace SuppX.Storage.Migrations
 {
-    [DbContext(typeof(AppContext))]
+    [DbContext(typeof(ApplicationContext))]
     [Migration("20250219152530_Init")]
     partial class Init
     {

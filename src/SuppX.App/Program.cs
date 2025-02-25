@@ -1,5 +1,5 @@
-using SuppX.Controller;
-using SuppX.Core;
+using SuppX.Service;
+using SuppX.Utils;
 using SuppX.Storage;
 
 DotEnv.Read(".env");

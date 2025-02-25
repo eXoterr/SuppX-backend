@@ -1,8 +1,8 @@
 ﻿using SuppX.Domain;
 
-namespace SuppX.Controller;
+namespace SuppX.Service;
 
 public interface IUserService
 {
-    Task CreateAsync(string login, string password, CancellationToken cancellationToken = default);
+    Task CreateAsync(string login, string password, int roleId, CancellationToken cancellationToken = default);
 }

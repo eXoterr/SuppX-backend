@@ -1,4 +1,3 @@
-using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SuppX.Storage.Repository;
@@ -13,7 +12,7 @@ public static class Extensions
         
         Config config = new();
 
-        services.AddDbContext<AppContext>(x => {
+        services.AddDbContext<ApplicationContext>(x => {
             x.UseNpgsql(config.GetConnectionString());
         });
 

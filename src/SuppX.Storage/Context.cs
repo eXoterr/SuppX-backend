@@ -4,7 +4,7 @@ using SuppX.Storage.EntityTypeConfiguration;
 
 namespace SuppX.Storage;
 
-public class AppContext(DbContextOptions contextOptions) : DbContext(contextOptions)
+public class ApplicationContext(DbContextOptions contextOptions) : DbContext(contextOptions)
 {
     public DbSet<Role> Roles { get; set; }
     public DbSet<User> Users { get; set; }

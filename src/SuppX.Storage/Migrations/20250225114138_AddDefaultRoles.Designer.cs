@@ -12,8 +12,8 @@ using SuppX.Storage;
 namespace SuppX.Storage.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20250219161149_FixBanReasonAndRole")]
-    partial class FixBanReasonAndRole
+    [Migration("20250225114138_AddDefaultRoles")]
+    partial class AddDefaultRoles
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -141,6 +141,18 @@ namespace SuppX.Storage.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "admin"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "user"
+                        });
                 });
 
             modelBuilder.Entity("SuppX.Domain.Ticket", b =>

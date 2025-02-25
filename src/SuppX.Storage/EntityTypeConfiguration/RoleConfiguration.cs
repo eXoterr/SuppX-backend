@@ -1,12 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SuppX.Domain;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using SuppX.Utils;
 
 namespace SuppX.Storage.EntityTypeConfiguration
 {
@@ -16,6 +11,10 @@ namespace SuppX.Storage.EntityTypeConfiguration
         {
             builder.HasKey(r => r.Id);
             builder.Property(r => r.Id).ValueGeneratedOnAdd();
+            builder.HasData(
+                new Role{ Id = Globals.ROLE_ADMIN_ID, Name = "admin"},
+                new Role{ Id = Globals.ROLE_USER_ID, Name = "user"}
+            );
         }
     }
 }

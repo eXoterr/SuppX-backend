@@ -1,23 +1,16 @@
 using System.Diagnostics;
-using Microsoft.Extensions.Logging;
 
-namespace SuppX.Core;
+namespace SuppX.Utils;
 
 public static class DotEnv
 {
     const string NOT_FOUND = "file not found";
 
-    public static void Read(string path = ".env", ILogger? logger = null)
+    public static void Read(string path = ".env")
     {
         if(!File.Exists(path))
         {
-            if(logger is not null)
-            {
-                logger.LogError(NOT_FOUND);
-            }else
-            {
-                Debug.Print(NOT_FOUND);
-            }
+            Debug.Print(NOT_FOUND);
             return;
         }
         
