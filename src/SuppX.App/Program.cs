@@ -2,21 +2,28 @@ using SuppX.Service;
 using SuppX.Utils;
 using SuppX.Storage;
 
-DotEnv.Read(".env");
+namespace SuppX.App;
 
-var builder = WebApplication.CreateBuilder(args);
+internal class Program
+{
+    private static void Main(string[] args)
+    {
+        DotEnv.Read(".env");
 
-builder.Services.AddStorage();
-builder.Services.AddServices();
-builder.Services.AddControllers();
-builder.Services.AddSwaggerGen();
+        var builder = WebApplication.CreateBuilder(args);
 
-var app = builder.Build();
+        builder.Services.AddStorage();
+        builder.Services.AddServices();
+        builder.Services.AddControllers();
+        builder.Services.AddSwaggerGen();
+        builder.Services.AddAuthorization();
+        builder.Services.AddConfiguredAuth();
 
+        var app = builder.Build();
 
-// app.MapGet("/", () => $"Hello {Environment.GetEnvironmentVariable("DB_HOST")}");
-
-app.MapControllers();
-app.UseSwagger();
-app.UseSwaggerUI();
-app.Run();
+        app.MapControllers();
+        app.UseSwagger();
+        app.UseSwaggerUI();
+        app.Run();
+    }
+}

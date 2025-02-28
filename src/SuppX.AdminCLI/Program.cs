@@ -17,7 +17,7 @@ while (true)
             Console.WriteLine("Enter new password:");
             string password = Console.ReadLine() ?? "1234567890";
             var userManager = core.Services.GetService<UserManager>();
-            userManager?.CreateAdmin(login, password);
+            userManager?.CreateAdmin(login, password).Wait();
             Console.WriteLine("New admin account created");
             break;
         default:

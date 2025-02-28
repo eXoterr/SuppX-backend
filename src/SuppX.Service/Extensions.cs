@@ -9,6 +9,7 @@ public static class Extensions
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IAuthService, AuthService>();
         return services;
     }
 }

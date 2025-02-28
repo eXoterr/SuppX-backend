@@ -20,8 +20,8 @@ namespace SuppX.Storage.EntityTypeConfiguration
             builder.HasKey(u => u.Id);
             builder
             .HasOne(x => x.Role)
-            .WithOne()
-            .HasForeignKey<User>(x => x.RoleId);
+            .WithMany()
+            .HasForeignKey(x => x.RoleId);
 
             builder.Property(u => u.Password)
                 .HasMaxLength(100)

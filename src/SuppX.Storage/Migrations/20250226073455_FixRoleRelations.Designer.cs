@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SuppX.Storage;
@@ -11,9 +12,11 @@ using SuppX.Storage;
 namespace SuppX.Storage.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20250226073455_FixRoleRelations")]
+    partial class FixRoleRelations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -166,14 +169,14 @@ namespace SuppX.Storage.Migrations
                     b.Property<int>("ClientId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("CloseReasonId")
-                        .HasColumnType("integer");
-
                     b.Property<DateTime>("ClosedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("ReasonId")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -181,7 +184,7 @@ namespace SuppX.Storage.Migrations
 
                     b.HasIndex("ClientId");
 
-                    b.HasIndex("CloseReasonId");
+                    b.HasIndex("ReasonId");
 
                     b.ToTable("Tickets");
                 });
@@ -268,9 +271,9 @@ namespace SuppX.Storage.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SuppX.Domain.CloseReason", "CloseReason")
+                    b.HasOne("SuppX.Domain.CloseReason", "Reason")
                         .WithMany()
-                        .HasForeignKey("CloseReasonId")
+                        .HasForeignKey("ReasonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -278,7 +281,7 @@ namespace SuppX.Storage.Migrations
 
                     b.Navigation("Client");
 
-                    b.Navigation("CloseReason");
+                    b.Navigation("Reason");
                 });
 
             modelBuilder.Entity("SuppX.Domain.User", b =>
