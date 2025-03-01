@@ -20,6 +20,15 @@ while (true)
             userManager?.CreateAdmin(login, password).Wait();
             Console.WriteLine("New admin account created");
             break;
+        case "create user":
+            Console.WriteLine("Enter new login:");
+            string login = Console.ReadLine() ?? "user";
+            Console.WriteLine("Enter new password:");
+            string password = Console.ReadLine() ?? "1234567890";
+            var userManager = core.Services.GetService<UserManager>();
+            userManager?.CreateUser(login, password).Wait();
+            Console.WriteLine("New user account created");
+            break;
         default:
             Console.WriteLine("Command not recognized");
             break;

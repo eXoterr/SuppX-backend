@@ -22,5 +22,8 @@ public class ApplicationContext(DbContextOptions contextOptions) : DbContext(con
         modelBuilder.ApplyConfiguration(new UserProfileConfiguration());
         modelBuilder.ApplyConfiguration(new AgentGroupConfiguration());
         modelBuilder.ApplyConfiguration(new AgentConfiguration());
+        modelBuilder.ApplyConfiguration(new TicketCategoryConfiguration());
+        modelBuilder.ApplyConfiguration(new CloseReasonConfiguration());
+        modelBuilder.ApplyConfiguration(new TicketConfiguration());
     }
 }

@@ -10,4 +10,9 @@ public class UserManager(IUserService userService)
     {
         await userService.CreateAsync(login, password, Globals.ROLE_ADMIN_ID);
     }
+
+    public async Task CreateUser(string login, string password)
+    {
+        await userService.CreateAsync(login, password, Globals.ROLE_USER_ID);
+    }
 }

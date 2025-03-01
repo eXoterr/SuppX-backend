@@ -25,5 +25,10 @@ public class TicketConfiguration : IEntityTypeConfiguration<Ticket>
         .HasOne(x => x.CloseReason)
         .WithMany()
         .HasForeignKey(x => x.CloseReasonId);
+
+        builder
+        .HasOne(x => x.Category)
+        .WithMany()
+        .HasForeignKey(x => x.CategoryId);
     }
 }

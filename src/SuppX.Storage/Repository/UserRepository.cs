@@ -14,6 +14,10 @@ internal class UserRepository(ApplicationContext context) : IUserRepository
 
     public async Task<User?> GetByLoginAsync(string login, CancellationToken cancellationToken = default)
     {
-        return await context.Users.FirstOrDefaultAsync(x => x.Login == login, cancellationToken: cancellationToken);
+        return await context.Users.FirstOrDefaultAsync(x => x.Login == login, cancellationToken);
+    }
+    public async Task<User?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+    {
+        return await context.Users.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 }
