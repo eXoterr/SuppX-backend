@@ -9,6 +9,7 @@ public static class Extensions
     public static IServiceCollection AddStorage(this IServiceCollection services)
     {
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<ITicketRepository, TicketRepository>();
         
         Config config = new();
 

@@ -12,6 +12,9 @@ internal class Program
 
         var builder = WebApplication.CreateBuilder(args);
 
+        builder.Logging.ClearProviders();
+        builder.Logging.AddConsole();
+
         builder.Services.AddStorage();
         builder.Services.AddServices();
         builder.Services.AddControllers();

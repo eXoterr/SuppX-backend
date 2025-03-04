@@ -1,5 +1,7 @@
 using System;
 using Microsoft.AspNetCore.Mvc;
+using SuppX.App.Models;
+using SuppX.Domain;
 using SuppX.Service;
 using SuppX.Utils;
 
@@ -27,13 +29,26 @@ public class UserController(IUserService userService, IAuthService authService) 
 
     [Route("login")]
     [HttpPost]
-    public async Task<IActionResult> LoginAsync(string login, string password)
+    public async Task<IActionResult> LoginAsync([FromBody] LoginRequest request)
     {
-        string? token = await authService.LoginUserAsync(login, password);
-        if (token is null)
+        TokenPair? tokenPair = await authService.LoginUserAsync(request.Login, request.Password);
+        if (tokenPair is null)
         {
-            return Forbid("incorrect login or password");
+            return BadRequest("incorrect login or password");
         }
-        return Ok(token);
+        return Ok(tokenPair);
+    }
+
+    [Route("refresh")]
+    [HttpPost]
+    public async Task<IActionResult> RefreshAsync([FromBody] string refreshToken)
+    {
+        // string? token = await authService.LoginUserAsync(request.Login, request.Password);
+        TokenPair? tokenPair = authService.RefreshUser(refreshToken);
+        if (tokenPair is null)
+        {
+            return BadRequest("incorrect refresh token");
+        }
+        return Ok(tokenPair);
     }
 }

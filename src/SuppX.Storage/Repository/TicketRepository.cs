@@ -16,6 +16,7 @@ public class TicketRepository(ApplicationContext context) : ITicketRepository
 
     public async Task CreateAsync(Ticket ticket, CancellationToken cancellationToken = default)
     {
+        ticket.CreatedAt = DateTime.UtcNow;
         await context.Tickets.AddAsync(ticket, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
     }

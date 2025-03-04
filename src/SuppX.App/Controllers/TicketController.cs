@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SuppX.App.Models;
 using SuppX.Domain;
 using SuppX.Service;
 
@@ -8,19 +10,30 @@ namespace SuppX.App.Controllers;
 [Route("ticket")]
 public class TicketController(ITicketService ticketService) : ControllerBase
 {
+    [Authorize]
     [Route("new")]
     [HttpPost]
-    public async Task<IActionResult> CreateAsync(int clientId, string theme, string description)
+    public async Task<IActionResult> CreateAsync([FromBody] NewTicketRequest newTicket)
     {
         var ticket = new Ticket
         {
-            ClientId = clientId,
-            Theme = theme,
-            Description = description
+            ClientId = newTicket.ClientId,
+            Theme = newTicket.Theme,
+            Description = newTicket.Description
         };
 
         await ticketService.CreateAsync(ticket);
 
         return Created();
+    }
+
+    [Authorize]
+    [Route("list")]
+    [HttpGet]
+    public async Task<IActionResult> GetTicketsAsync(int offset, int limit = 10)
+    {
+        List<Ticket> tickets = await ticketService.GetTicketsAsync(offset, limit);
+
+        return Ok(tickets);
     }
 }
