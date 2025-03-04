@@ -3,11 +3,13 @@ using System.ComponentModel;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 using BCrypt.Net;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using SuppX.Domain;
 using SuppX.Storage;
+using SuppX.Storage.Repository;
 
 namespace SuppX.Service;
 
@@ -33,10 +35,15 @@ public class AuthService(IUserRepository repository, ITokenService tokenService,
         return tokenPair;
     }
 
-    public TokenPair? RefreshUser(string refreshToken, CancellationToken cancellationToken = default)
+    public async Task<TokenPair?> RefreshUser(string refreshToken, CancellationToken cancellationToken = default)
     {
         var validatedToken = tokenService.ValidateToken(refreshToken);
         if (validatedToken is null)
+        {
+            return null;
+        }
+
+        if (await tokenService.IsBlacklistedAsync(refreshToken, cancellationToken))
         {
             return null;
         }
@@ -56,7 +63,7 @@ public class AuthService(IUserRepository repository, ITokenService tokenService,
 
         var tokenPair = tokenService.CreateTokenPair(userId, roleId);
 
-        // TODO: Disable used refresh token 
+        await tokenService.RevokeTokenAsync(refreshToken, cancellationToken);
 
         return tokenPair;
     }

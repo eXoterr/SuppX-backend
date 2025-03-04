@@ -12,6 +12,7 @@ public class ApplicationContext(DbContextOptions contextOptions) : DbContext(con
     public DbSet<AgentGroup> AgentGroups { get; set; }
     public DbSet<Agent> Agents { get; set; }
     public DbSet<Ticket> Tickets { get; set; }
+    public DbSet<BlacklistedToken> BlacklistedTokens { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -25,5 +26,6 @@ public class ApplicationContext(DbContextOptions contextOptions) : DbContext(con
         modelBuilder.ApplyConfiguration(new TicketCategoryConfiguration());
         modelBuilder.ApplyConfiguration(new CloseReasonConfiguration());
         modelBuilder.ApplyConfiguration(new TicketConfiguration());
+        modelBuilder.ApplyConfiguration(new TokenBlacklistConfiguration());
     }
 }

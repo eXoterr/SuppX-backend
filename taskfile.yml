@@ -10,3 +10,6 @@ tasks:
   migration:add:
     cmds:
       - dotnet ef migrations add {{.CLI_ARGS}} --startup-project src/SuppX.App/SuppX.App.csproj --project src/SuppX.Storage/SuppX.Storage.csproj
+  migration:rm:
+    cmds:
+      - dotnet ef migrations remove --startup-project src/SuppX.App/SuppX.App.csproj --project src/SuppX.Storage/SuppX.Storage.csproj

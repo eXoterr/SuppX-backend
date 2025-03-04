@@ -44,7 +44,7 @@ public class UserController(IUserService userService, IAuthService authService) 
     public async Task<IActionResult> RefreshAsync([FromBody] string refreshToken)
     {
         // string? token = await authService.LoginUserAsync(request.Login, request.Password);
-        TokenPair? tokenPair = authService.RefreshUser(refreshToken);
+        TokenPair? tokenPair = await authService.RefreshUser(refreshToken);
         if (tokenPair is null)
         {
             return BadRequest("incorrect refresh token");

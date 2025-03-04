@@ -5,10 +5,11 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using SuppX.Domain;
+using SuppX.Storage.Repository;
 
 namespace SuppX.Service;
 
-public class TokenService(ILogger<TokenService> logger) : ITokenService
+public class TokenService(ITokenBlacklistRepository tokenBlacklist, ILogger<TokenService> logger) : ITokenService
 {
     public TokenPair CreateTokenPair(int userId, int roleId)
     {
@@ -67,5 +68,15 @@ public class TokenService(ILogger<TokenService> logger) : ITokenService
             logger.LogError($"got invalid jwt token: {ex}");
             return null;
         }
+    }
+
+    public async Task RevokeTokenAsync(string token, CancellationToken cancellationToken = default)
+    {
+        await tokenBlacklist.CreateAsync(token);
+    }
+
+    public async Task<bool> IsBlacklistedAsync(string token, CancellationToken cancellationToken = default)
+    {
+        return await tokenBlacklist.ExistsAsync(token);
     }
 }
