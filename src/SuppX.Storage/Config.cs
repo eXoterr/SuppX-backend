@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace SuppX.Storage
 {
 
-    public class Config
+    public class DbConfig
     {
         public string Host { get; }
         public string User { get; }
@@ -19,7 +19,7 @@ namespace SuppX.Storage
             return $"Host={Host}; Database={Database}; Username={User}; Password={Password}";
         }
 
-        public Config()
+        public DbConfig()
         {
             Host = Environment.GetEnvironmentVariable("DB_HOST") ?? "127.0.0.1";
             User = Environment.GetEnvironmentVariable("DB_USER") ?? "postgres";

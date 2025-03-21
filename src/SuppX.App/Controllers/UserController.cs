@@ -11,14 +11,20 @@ namespace SuppX.App.Controllers;
 [Route("user")]
 public class UserController(IUserService userService, IAuthService authService) : ControllerBase
 {
-    [Route("register")]
+
+    /// <summary>
+    /// Registers new User account
+    /// </summary>
+    /// <param name="request">Register request, containing login and password</param>
+    /// <response code="201">User created</response>
+    /// <response code="409">Login is already taken</response>
     [HttpPost]
-    public async Task<IActionResult> CreateAsync(string login, string password)
+    public async Task<IActionResult> CreateAsync(RegisterRequest request)
     {
-        var isUserExits = await userService.ExistsAsync(login);
+        var isUserExits = await userService.ExistsAsync(request.Login);
         if (!isUserExits)
         {
-            await userService.CreateAsync(login, password, Globals.ROLE_USER_ID);
+            await userService.CreateAsync(request.Login, request.Password, Globals.ROLE_USER_ID);
             return Created();
         }
         else
@@ -27,7 +33,14 @@ public class UserController(IUserService userService, IAuthService authService) 
         }
     }
 
-    [Route("login")]
+    /// <summary>
+    /// Creates User session
+    /// </summary>
+    /// <param name="request">Login data Request</param>
+    /// <returns>JWT Token Pair</returns>.
+    /// <response code="200">Returns the new JWT token pair</response>
+    /// <response code="400">Got invalid login or password</response>
+    [Route("session")]
     [HttpPost]
     public async Task<IActionResult> LoginAsync([FromBody] LoginRequest request)
     {
@@ -39,12 +52,19 @@ public class UserController(IUserService userService, IAuthService authService) 
         return Ok(tokenPair);
     }
 
-    [Route("refresh")]
-    [HttpPost]
-    public async Task<IActionResult> RefreshAsync([FromBody] string refreshToken)
+    /// <summary>
+    /// Refreshes user session using 'refreshToken'
+    /// </summary>
+    /// <param name="request">Request containing refresh token</param>
+    /// <returns>New Token Pair</returns>
+    /// <response code="200">Returns the new JWT token pair</response>
+    /// <response code="400">Got invalid token</response>
+    [Route("session")]
+    [HttpPatch]
+    public async Task<IActionResult> RefreshAsync([FromBody] RefreshRequest request)
     {
         // string? token = await authService.LoginUserAsync(request.Login, request.Password);
-        TokenPair? tokenPair = await authService.RefreshUser(refreshToken);
+        TokenPair? tokenPair = await authService.RefreshUser(request.RefreshToken);
         if (tokenPair is null)
         {
             return BadRequest("incorrect refresh token");

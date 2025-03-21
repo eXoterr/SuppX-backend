@@ -4,7 +4,7 @@ using SuppX.Storage.EntityTypeConfiguration;
 
 namespace SuppX.Storage;
 
-public class ApplicationContext(DbContextOptions contextOptions) : DbContext(contextOptions)
+public class ApplicationContext(DbConfig config) : DbContext
 {
     public DbSet<Role> Roles { get; set; }
     public DbSet<User> Users { get; set; }
@@ -13,6 +13,12 @@ public class ApplicationContext(DbContextOptions contextOptions) : DbContext(con
     public DbSet<Agent> Agents { get; set; }
     public DbSet<Ticket> Tickets { get; set; }
     public DbSet<BlacklistedToken> BlacklistedTokens { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder contextOptions)
+    {
+        base.OnConfiguring(contextOptions);
+        contextOptions.UseNpgsql(config.GetConnectionString());
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

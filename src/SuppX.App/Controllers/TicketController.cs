@@ -7,11 +7,15 @@ using SuppX.Service;
 namespace SuppX.App.Controllers;
 
 [ApiController]
-[Route("ticket")]
+[Route("tickets")]
 public class TicketController(ITicketService ticketService) : ControllerBase
 {
+    /// <summary>
+    /// Creates new support request Ticket
+    /// </summary>
+    /// <param name="newTicket">Request, containing client id, theme and description of problem</param>
+    /// <response code="201">Ticket created</response>
     [Authorize]
-    [Route("new")]
     [HttpPost]
     public async Task<IActionResult> CreateAsync([FromBody] NewTicketRequest newTicket)
     {
@@ -27,8 +31,13 @@ public class TicketController(ITicketService ticketService) : ControllerBase
         return Created();
     }
 
+    /// <summary>
+    /// Returns list of support Tickets
+    /// </summary>
+    /// <param name="offset">Offset from start, used for pagination</param>
+    /// <param name="limit">Max amout of Tickets to return</param>
+    /// <returns></returns>
     [Authorize]
-    [Route("list")]
     [HttpGet]
     public async Task<IActionResult> GetTicketsAsync(int offset, int limit = 10)
     {

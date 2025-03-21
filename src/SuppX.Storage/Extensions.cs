@@ -11,12 +11,17 @@ public static class Extensions
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ITicketRepository, TicketRepository>();
         services.AddScoped<ITokenBlacklistRepository, TokenBlacklistRepository>();
-        
-        Config config = new();
+        services.AddScoped<DbConfig>();
 
-        services.AddDbContext<ApplicationContext>(x => {
-            x.UseNpgsql(config.GetConnectionString());
-        });
+        DbConfig config = new();
+
+        var canConnect = new ApplicationContext(config).Database.CanConnect();
+        if (!canConnect)
+        {
+            throw new Exception("Unable to connect to db!");
+        }
+
+        services.AddScoped<ApplicationContext, ApplicationContext>();
 
         return services;
     }
