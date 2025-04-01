@@ -1,3 +1,4 @@
+using SuppX.App.Extensions;
 using SuppX.Service;
 using SuppX.Utils;
 using SuppX.Storage;
@@ -16,27 +17,11 @@ internal class Program
         builder.Logging.ClearProviders();
         builder.Logging.AddConsole();
 
-        builder.Services.AddCors(
-            options =>
-            {
-                options.AddDefaultPolicy(policy =>
-                {
-                    policy.WithOrigins("http://localhost:5173");
-                    policy.AllowAnyHeader();
-                    policy.AllowAnyMethod();
-                });
-            }
-        );
+        builder.Services.AddConfiguredCORS();
         builder.Services.AddStorage();
         builder.Services.AddServices();
         builder.Services.AddControllers();
-        builder.Services.AddSwaggerGen(
-            opts =>
-            {
-                var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                opts.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
-            }
-        );
+        builder.Services.AddConfiguredSwagger();
         builder.Services.AddAuthorization();
         builder.Services.AddConfiguredAuth();
 

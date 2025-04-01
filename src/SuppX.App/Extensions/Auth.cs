@@ -2,9 +2,9 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
-namespace SuppX.App;
+namespace SuppX.App.Extensions;
 
-public static class AuthExtension
+public static class Auth
 {
     public static void AddConfiguredAuth(this IServiceCollection services)
     {
