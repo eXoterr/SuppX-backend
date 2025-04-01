@@ -29,7 +29,7 @@ public class UserController(IUserService userService, IAuthService authService) 
         }
         else
         {
-            return Conflict("login is already taken");
+            return Conflict(new JSONError("incorrect login or password"));
         }
     }
 
@@ -47,7 +47,7 @@ public class UserController(IUserService userService, IAuthService authService) 
         TokenPair? tokenPair = await authService.LoginUserAsync(request.Login, request.Password);
         if (tokenPair is null)
         {
-            return BadRequest("incorrect login or password");
+            return BadRequest(new JSONError("incorrect login or password"));
         }
         return Ok(tokenPair);
     }
@@ -67,7 +67,7 @@ public class UserController(IUserService userService, IAuthService authService) 
         TokenPair? tokenPair = await authService.RefreshUser(request.RefreshToken);
         if (tokenPair is null)
         {
-            return BadRequest("incorrect refresh token");
+            return BadRequest(new JSONError("incorrect login or password"));
         }
         return Ok(tokenPair);
     }
