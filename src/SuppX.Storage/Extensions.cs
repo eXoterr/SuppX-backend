@@ -10,7 +10,7 @@ public static class Extensions
     {
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ITicketRepository, TicketRepository>();
-        services.AddScoped<ITokenBlacklistRepository, TokenBlacklistRepository>();
+        services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddScoped<DbConfig>();
 
         DbConfig config = new();

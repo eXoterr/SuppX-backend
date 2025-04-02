@@ -32,6 +32,9 @@ public class AuthService(IUserRepository repository, ITokenService tokenService,
         }
 
         var tokenPair = tokenService.CreateTokenPair(user.Id, user.RoleId);
+
+        await tokenService.StoreRefreshAsync(tokenPair.RefreshToken, cancellationToken);
+        
         return tokenPair;
     }
 
@@ -43,7 +46,7 @@ public class AuthService(IUserRepository repository, ITokenService tokenService,
             return null;
         }
 
-        if (await tokenService.IsBlacklistedAsync(refreshToken, cancellationToken))
+        if (!await tokenService.IsRefreshExistsAsync(refreshToken, cancellationToken))
         {
             return null;
         }
@@ -63,7 +66,9 @@ public class AuthService(IUserRepository repository, ITokenService tokenService,
 
         var tokenPair = tokenService.CreateTokenPair(userId, roleId);
 
-        await tokenService.RevokeTokenAsync(refreshToken, cancellationToken);
+        await tokenService.DeleteRefreshAsync(refreshToken);
+
+        await tokenService.StoreRefreshAsync(tokenPair.RefreshToken, cancellationToken);
 
         return tokenPair;
     }

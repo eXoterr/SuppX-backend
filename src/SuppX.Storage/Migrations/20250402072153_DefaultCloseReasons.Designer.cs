@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SuppX.Storage;
@@ -11,9 +12,11 @@ using SuppX.Storage;
 namespace SuppX.Storage.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20250402072153_DefaultCloseReasons")]
+    partial class DefaultCloseReasons
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -76,6 +79,23 @@ namespace SuppX.Storage.Migrations
                     b.ToTable("BanReason");
                 });
 
+            modelBuilder.Entity("SuppX.Domain.BlacklistedToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BlacklistedTokens");
+                });
+
             modelBuilder.Entity("SuppX.Domain.CloseReason", b =>
                 {
                     b.Property<int>("Id")
@@ -90,7 +110,7 @@ namespace SuppX.Storage.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CloseReasons");
+                    b.ToTable("CloseReason");
 
                     b.HasData(
                         new
@@ -143,22 +163,6 @@ namespace SuppX.Storage.Migrations
                     b.HasKey("UserId");
 
                     b.ToTable("Profiles");
-                });
-
-            modelBuilder.Entity("SuppX.Domain.RefreshToken", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Value")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("SuppX.Domain.Role", b =>

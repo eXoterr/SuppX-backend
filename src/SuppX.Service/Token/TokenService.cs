@@ -9,7 +9,7 @@ using SuppX.Storage.Repository;
 
 namespace SuppX.Service;
 
-public class TokenService(ITokenBlacklistRepository tokenBlacklist, ILogger<TokenService> logger) : ITokenService
+public class TokenService(IRefreshTokenRepository refreshTokenRepository, ILogger<TokenService> logger) : ITokenService
 {
     public TokenPair CreateTokenPair(int userId, int roleId)
     {
@@ -70,13 +70,18 @@ public class TokenService(ITokenBlacklistRepository tokenBlacklist, ILogger<Toke
         }
     }
 
-    public async Task RevokeTokenAsync(string token, CancellationToken cancellationToken = default)
+    public async Task StoreRefreshAsync(string token, CancellationToken cancellationToken = default)
     {
-        await tokenBlacklist.CreateAsync(token);
+        await refreshTokenRepository.CreateAsync(token);
     }
 
-    public async Task<bool> IsBlacklistedAsync(string token, CancellationToken cancellationToken = default)
+    public async Task<bool> IsRefreshExistsAsync(string token, CancellationToken cancellationToken = default)
     {
-        return await tokenBlacklist.ExistsAsync(token);
+        return await refreshTokenRepository.ExistsAsync(token);
+    }
+
+    public async Task DeleteRefreshAsync(string token, CancellationToken cancellationToken = default)
+    {
+        await refreshTokenRepository.DeleteAsync(token, cancellationToken);
     }
 }

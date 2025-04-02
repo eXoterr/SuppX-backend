@@ -1,3 +1,4 @@
+using System.Xml.Serialization;
 using Microsoft.EntityFrameworkCore;
 using SuppX.Domain;
 
@@ -30,5 +31,13 @@ public class TicketRepository(ApplicationContext context) : ITicketRepository
     {
         await context.Tickets.AddAsync(ticket, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<List<CloseReason>> GetCloseReasonsAsync(int limit, CancellationToken cancellationToken = default)
+    {
+        return await context.CloseReasons
+                            .OrderBy(x => x.Id)
+                            .Take(limit)
+                            .ToListAsync();
     }
 }

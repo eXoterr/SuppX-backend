@@ -45,4 +45,19 @@ public class TicketController(ITicketService ticketService) : ControllerBase
 
         return Ok(tickets);
     }
+
+    /// <summary>
+    /// Returns available ticket Close Reasons 
+    /// </summary>
+    /// <param name="limit">Limit of Close Reasons</param>
+    /// <returns></returns>
+    [Authorize]
+    [Route("reasons")]
+    [HttpGet]
+    public async Task<IActionResult> GetCloseReasonsAsync(int limit = 10)
+    {
+        List<CloseReason> closeReasons = await ticketService.GetCloseReasonsAsync(limit);
+
+        return Ok(closeReasons);
+    }
 }
