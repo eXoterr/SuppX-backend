@@ -9,6 +9,5 @@ public interface ITicketRepository
     Task CreateAsync(Ticket ticket, CancellationToken cancellationToken);
     Task<Ticket?> GetByIdAsync(int id, CancellationToken cancellationToken);
     Task UpdateAsync(Ticket ticket, CancellationToken cancellationToken);
-
     Task<List<CloseReason>> GetCloseReasonsAsync(int limit, CancellationToken cancellationToken = default);
 }

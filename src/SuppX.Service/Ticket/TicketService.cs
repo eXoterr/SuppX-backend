@@ -63,7 +63,7 @@ public class TicketService(ITicketRepository ticketRepository, IUserRepository u
         await ticketRepository.UpdateAsync(ticket, cancellationToken);
     }
 
-    public async Task<List<Ticket>> GetTicketsAsync(int offset, int limit, CancellationToken cancellationToken)
+    public async Task<List<Ticket>> GetAsync(int offset, int limit, CancellationToken cancellationToken)
     {
         return await ticketRepository.GetTicketsAsync(offset, limit, cancellationToken);
     }
@@ -72,4 +72,10 @@ public class TicketService(ITicketRepository ticketRepository, IUserRepository u
     {
         return await ticketRepository.GetCloseReasonsAsync(limit, cancellationToken);
     }
+
+    public async Task UpdateAsync(Ticket ticket, CancellationToken cancellationToken = default)
+    {
+        await ticketRepository.UpdateAsync(ticket, cancellationToken);
+    }
+
 }

@@ -17,7 +17,7 @@ public class TicketController(ITicketService ticketService) : ControllerBase
     /// <response code="201">Ticket created</response>
     [Authorize]
     [HttpPost]
-    public async Task<IActionResult> CreateAsync([FromBody] NewTicketRequest newTicket)
+    public async Task<IActionResult> CreateAsync([FromBody] TicketModel newTicket)
     {
         var ticket = new Ticket
         {
@@ -41,9 +41,25 @@ public class TicketController(ITicketService ticketService) : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetTicketsAsync(int offset, int limit = 10)
     {
-        List<Ticket> tickets = await ticketService.GetTicketsAsync(offset, limit);
+        List<Ticket> tickets = await ticketService.GetAsync(offset, limit);
 
         return Ok(tickets);
+    }
+
+    [Authorize]
+    [HttpPut]
+    public async Task<IActionResult> UpdateAsync([FromBody] TicketModel ticket)
+    {
+        Ticket ticketDTO = new()
+        {
+            ClientId = ticket.ClientId,
+            Theme = ticket.Theme,
+            Description = ticket.Description
+        };
+
+        await ticketService.UpdateAsync(ticketDTO);
+
+        return Ok();
     }
 
     /// <summary>

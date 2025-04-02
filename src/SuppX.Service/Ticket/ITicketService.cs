@@ -9,6 +9,8 @@ public interface ITicketService
     Task CloseAsync(int ticketId, int reasonId, CancellationToken cancellationToken = default);
     Task AssignCategoryAsync(int ticketId, int categoryId, CancellationToken cancellationToken = default);
     Task AssignAgentAsync(int ticketId, int categoryId, CancellationToken cancellationToken = default);
-    Task<List<Ticket>> GetTicketsAsync(int offset, int limit, CancellationToken cancellationToken = default);
+    Task<List<Ticket>> GetAsync(int offset, int limit, CancellationToken cancellationToken = default);
     Task<List<CloseReason>> GetCloseReasonsAsync(int limit, CancellationToken cancellationToken = default);
+    Task UpdateAsync(Ticket ticket, CancellationToken cancellationToken = default);
+
 }

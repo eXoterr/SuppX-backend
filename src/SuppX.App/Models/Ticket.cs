@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SuppX.App.Models;
 
-public class NewTicketRequest
+public class TicketModel
 {
     [Required]
     public int ClientId { get; set; }
