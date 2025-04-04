@@ -26,40 +26,106 @@ public class TicketController(ITicketService ticketService) : ControllerBase
             Description = newTicket.Description
         };
 
-        await ticketService.CreateAsync(ticket);
+        try
+        {
+            await ticketService.CreateAsync(ticket);
+        }
+        catch (BadRequestException error)
+        {
+            return BadRequest(new JSONError(error.Message));
+        }
+        catch (Exception error)
+        {
+            return Problem(error.Message);
+        }
 
         return Created();
+    }
+
+    /// <summary>
+    /// Closes opened Ticket with selected Reason
+    /// </summary>
+    /// <param name="closeTicket"></param>
+    /// <returns></returns>
+    [Authorize]
+    [Route("closed")]
+    [HttpPost]
+    public async Task<IActionResult> CloseAsync([FromBody] CloseTicketRequest closeTicket)
+    {
+        try
+        {
+            await ticketService.CloseAsync(closeTicket.TicketId, closeTicket.ReasonId);
+        }
+        catch (BadRequestException error)
+        {
+            return BadRequest(new JSONError(error.Message));
+        }
+        catch (Exception error)
+        {
+            return Problem(error.Message);
+        }
+
+        return Ok();
     }
 
     /// <summary>
     /// Returns list of support Tickets
     /// </summary>
     /// <param name="offset">Offset from start, used for pagination</param>
-    /// <param name="limit">Max amout of Tickets to return</param>
+    /// <param name="limit">Max amount of Tickets to return</param>
     /// <returns></returns>
     [Authorize]
     [HttpGet]
     public async Task<IActionResult> GetTicketsAsync(int offset, int limit = 10)
     {
-        List<Ticket> tickets = await ticketService.GetAsync(offset, limit);
-
-        return Ok(tickets);
+        try
+        {
+            List<Ticket> tickets = await ticketService.GetAsync(offset, limit);
+            return Ok(tickets);
+        }
+        catch (BadRequestException error)
+        {
+            return BadRequest(new JSONError(error.Message));
+        }
+        catch (Exception error)
+        {
+            return Problem(error.Message);
+        }
     }
 
+    /// <summary>
+    ///  Updates existing Ticket's properties
+    /// </summary>
+    /// <param name="newTicket">Updated Ticket object</param>
+    /// <returns></returns>
     [Authorize]
     [HttpPut]
-    public async Task<IActionResult> UpdateAsync([FromBody] TicketModel ticket)
+    public async Task<IActionResult> UpdateAsync([FromBody] TicketUpdateModel newTicket)
     {
-        Ticket ticketDTO = new()
+        var ticketDTO = new Ticket
         {
-            ClientId = ticket.ClientId,
-            Theme = ticket.Theme,
-            Description = ticket.Description
+            Id = newTicket.Id,
+            ClientId = newTicket.ClientId,
+            Theme = newTicket.Theme,
+            Description = newTicket.Description,
+            AgentId = newTicket.AgentId,
+            CategoryId = newTicket.CategoryId,
         };
 
-        await ticketService.UpdateAsync(ticketDTO);
 
-        return Ok();
+        try
+        {
+            await ticketService.UpdateAsync(ticketDTO);
+            return Ok();
+        }
+        catch (BadRequestException error)
+        {
+            return BadRequest(new JSONError(error.Message));
+        }
+        catch (Exception error)
+        {
+            return Problem(error.Message);
+        }
     }
 
     /// <summary>
@@ -72,8 +138,17 @@ public class TicketController(ITicketService ticketService) : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetCloseReasonsAsync(int limit = 10)
     {
-        List<CloseReason> closeReasons = await ticketService.GetCloseReasonsAsync(limit);
-
-        return Ok(closeReasons);
+        try
+        {
+            return Ok(await ticketService.GetCloseReasonsAsync(limit));
+        }
+        catch (BadRequestException error)
+        {
+            return BadRequest(new JSONError(error.Message));
+        }
+        catch (Exception error)
+        {
+            return Problem(error.Message);
+        }
     }
 }

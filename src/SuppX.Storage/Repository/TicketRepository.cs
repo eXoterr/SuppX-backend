@@ -29,7 +29,7 @@ public class TicketRepository(ApplicationContext context) : ITicketRepository
     }
     public async Task UpdateAsync(Ticket ticket, CancellationToken cancellationToken = default)
     {
-        await context.Tickets.AddAsync(ticket, cancellationToken);
+        context.Tickets.Update(ticket);
         await context.SaveChangesAsync(cancellationToken);
     }
 
@@ -39,5 +39,10 @@ public class TicketRepository(ApplicationContext context) : ITicketRepository
                             .OrderBy(x => x.Id)
                             .Take(limit)
                             .ToListAsync();
+    }
+
+    public async Task<CloseReason?> GetCloseReasonByIdAsync(int id, CancellationToken cancellationToken = default)
+    {
+        return await context.CloseReasons.Where(x => x.Id == id).FirstOrDefaultAsync(cancellationToken);
     }
 }
