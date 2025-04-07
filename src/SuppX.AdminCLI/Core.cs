@@ -12,7 +12,7 @@ public class Core
     {
         var services = new ServiceCollection();
 
-        services.AddStorage();
+        services.AddPostgresStorage();
         services.AddServices();
         services.AddUserManager();
 

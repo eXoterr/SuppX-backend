@@ -27,7 +27,11 @@ public class RefreshTokenRepository(ApplicationContext context) : IRefreshTokenR
         {
             Value = token
         };
-        await context.RefreshTokens.Where(x => x.Value == token).ExecuteDeleteAsync(cancellationToken);
-        await context.SaveChangesAsync(cancellationToken);
+        var refreshToken = await context.RefreshTokens.Where(x => x.Value == token).FirstOrDefaultAsync();
+        if (refreshToken != null)
+        {
+            context.RefreshTokens.Remove(refreshToken);
+            await context.SaveChangesAsync(cancellationToken);
+        }
     }
 }

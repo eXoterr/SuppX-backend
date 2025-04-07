@@ -6,16 +6,16 @@ namespace SuppX.Storage;
 
 public static class Extensions
 {
-    public static IServiceCollection AddStorage(this IServiceCollection services)
+    public static IServiceCollection AddPostgresStorage(this IServiceCollection services)
     {
-        services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<ITicketRepository, TicketRepository>();
-        services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
-        services.AddScoped<DbConfig>();
+        // services.AddScoped<DbConfig>();
 
         DbConfig config = new();
 
-        var canConnect = new ApplicationContext(config).Database.CanConnect();
+        var contextOptions = new DbContextOptionsBuilder();
+        contextOptions.UseNpgsql(config.GetConnectionString());
+
+        var canConnect = new ApplicationContext(contextOptions.Options).Database.CanConnect();
         if (!canConnect)
         {
             throw new Exception("Unable to connect to db!");
@@ -23,6 +23,14 @@ public static class Extensions
 
         services.AddScoped<ApplicationContext, ApplicationContext>();
 
+        return services;
+    }
+
+    public static IServiceCollection AddRepositories(this IServiceCollection services)
+    {
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<ITicketRepository, TicketRepository>();
+        services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         return services;
     }
 }

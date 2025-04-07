@@ -21,15 +21,14 @@ public class UserController(IUserService userService, IAuthService authService) 
     [HttpPost]
     public async Task<IActionResult> CreateAsync(RegisterRequest request)
     {
-        var isUserExits = await userService.ExistsAsync(request.Login);
-        if (!isUserExits)
+        try
         {
             await userService.CreateAsync(request.Login, request.Password, Globals.ROLE_USER_ID);
             return Created();
         }
-        else
+        catch (BadRequestException error)
         {
-            return Conflict(new JSONError("incorrect login or password"));
+            return BadRequest(new JSONError(error.Message));
         }
     }
 
@@ -64,7 +63,7 @@ public class UserController(IUserService userService, IAuthService authService) 
     public async Task<IActionResult> RefreshAsync([FromBody] RefreshRequest request)
     {
         // string? token = await authService.LoginUserAsync(request.Login, request.Password);
-        TokenPair? tokenPair = await authService.RefreshUser(request.RefreshToken);
+        TokenPair? tokenPair = await authService.RefreshUserAsync(request.RefreshToken);
         if (tokenPair is null)
         {
             return BadRequest(new JSONError("incorrect login or password"));

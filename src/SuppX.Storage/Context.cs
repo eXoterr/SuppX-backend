@@ -4,7 +4,7 @@ using SuppX.Storage.EntityTypeConfiguration;
 
 namespace SuppX.Storage;
 
-public class ApplicationContext(DbConfig config) : DbContext
+public class ApplicationContext(DbContextOptions contextOptions) : DbContext(contextOptions)
 {
     public DbSet<Role> Roles { get; set; }
     public DbSet<User> Users { get; set; }
@@ -15,11 +15,11 @@ public class ApplicationContext(DbConfig config) : DbContext
     public DbSet<CloseReason> CloseReasons { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder contextOptions)
-    {
-        base.OnConfiguring(contextOptions);
-        contextOptions.UseNpgsql(config.GetConnectionString());
-    }
+    // protected override void OnConfiguring(DbContextOptionsBuilder contextOptions)
+    // {
+    //     base.OnConfiguring(contextOptions);
+    //     contextOptions.UseNpgsql(config.GetConnectionString());
+    // }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -38,7 +38,7 @@ public class AuthService(IUserRepository repository, ITokenService tokenService,
         return tokenPair;
     }
 
-    public async Task<TokenPair?> RefreshUser(string refreshToken, CancellationToken cancellationToken = default)
+    public async Task<TokenPair?> RefreshUserAsync(string refreshToken, CancellationToken cancellationToken = default)
     {
         var validatedToken = tokenService.ValidateToken(refreshToken);
         if (validatedToken is null)

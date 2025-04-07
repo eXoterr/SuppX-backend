@@ -17,7 +17,8 @@ internal class Program
         builder.Logging.AddConsole();
 
         builder.Services.AddConfiguredCORS();
-        builder.Services.AddStorage();
+        builder.Services.AddRepositories();
+        builder.Services.AddPostgresStorage();
         builder.Services.AddServices();
         builder.Services.AddControllers();
         builder.Services.AddConfiguredSwagger();

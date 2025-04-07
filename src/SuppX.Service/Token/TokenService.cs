@@ -11,6 +11,8 @@ namespace SuppX.Service;
 
 public class TokenService(IRefreshTokenRepository refreshTokenRepository, ILogger<TokenService> logger) : ITokenService
 {
+    const string DEFAULT_JWT = "secretKeySecretKeySecretKey!!!12345secretKey!";
+
     public TokenPair CreateTokenPair(int userId, int roleId)
     {
         var claims = new List<Claim>
@@ -19,7 +21,7 @@ public class TokenService(IRefreshTokenRepository refreshTokenRepository, ILogge
             new("roleId", roleId.ToString())
         };
 
-        byte[] secret = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET") ?? "secretKeySecretKeySecretKey!!!");
+        byte[] secret = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET") ?? DEFAULT_JWT);
         var key = new SymmetricSecurityKey(secret);
 
         var jwtAccessToken = new JwtSecurityToken(
@@ -45,7 +47,7 @@ public class TokenService(IRefreshTokenRepository refreshTokenRepository, ILogge
 
     public JwtSecurityToken? ValidateToken(string token)
     {
-        byte[] secret = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET") ?? "secretKeySecretKeySecretKey!!!");
+        byte[] secret = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET") ?? DEFAULT_JWT);
         var key = new SymmetricSecurityKey(secret);
         var validationParams = new TokenValidationParameters
         {

@@ -8,6 +8,12 @@ public class UserService(IUserRepository repository) : IUserService
 {
     public async Task CreateAsync(string login, string password, int roleId, CancellationToken cancellationToken = default)
     {
+        bool isUserExists = await ExistsAsync(login, cancellationToken);
+        if (isUserExists)
+        {
+            throw new BadRequestException("This login is already registered");
+        }
+
         string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
         var user = new User
         {
