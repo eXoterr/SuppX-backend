@@ -1,5 +1,6 @@
 .env
 .vscode/
+.vs/
 
 # Build results
 [Dd]ebug/

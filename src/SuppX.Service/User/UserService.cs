@@ -19,7 +19,7 @@ public class UserService(IUserRepository repository) : IUserService
         {
             Login = login,
             Password = hashedPassword,
-            RoleId = roleId,
+            RoleId = roleId
         };
 
         await repository.CreateAsync(user, cancellationToken);

@@ -9,9 +9,9 @@ namespace SuppX.Domain
     public class Agent
     {
         public int UserId { get; set; }
-        public User User { get; set; }
-        public AgentGroup Group { get; set; }
+        public required User User { get; set; }
+        public AgentGroup? Group { get; set; }
         public int Rating { get; set; }
-        public List<Ticket> Tickets { get; set; }
+        public List<Ticket>? Tickets { get; set; }
     }
 }

@@ -19,6 +19,16 @@ public class TicketController(ITicketService ticketService) : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateAsync([FromBody] TicketModel newTicket)
     {
+        if(newTicket.Theme is null)
+        {
+            throw new BadRequestException("ticket theme cannot be null");
+        }
+
+        if(newTicket.Description is null)
+        {
+            throw new BadRequestException("ticket description cannot be null");
+        }
+
         var ticket = new Ticket
         {
             ClientId = newTicket.ClientId,
@@ -102,6 +112,16 @@ public class TicketController(ITicketService ticketService) : ControllerBase
     [HttpPut]
     public async Task<IActionResult> UpdateAsync([FromBody] TicketUpdateModel newTicket)
     {
+        if (newTicket.Theme is null)
+        {
+            throw new BadRequestException("ticket theme cannot be null");
+        }
+
+        if (newTicket.Description is null)
+        {
+            throw new BadRequestException("ticket description cannot be null");
+        }
+
         var ticketDTO = new Ticket
         {
             Id = newTicket.Id,
