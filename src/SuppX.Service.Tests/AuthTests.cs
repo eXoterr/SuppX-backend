@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SuppX.Domain;
+using SuppX.Domain.Globals;
 using SuppX.Storage;
 using SuppX.Utils;
 
@@ -51,12 +52,12 @@ public class AuthTests
     [InlineData("100500", "admin")]
     public async Task TestRegister(string login, string password)
     {
-        await userService.CreateAsync(login, password, Globals.ROLE_USER_ID);
+        await userService.CreateAsync(login, password, Roles.ROLE_USER_ID);
     }
 
     [Theory]
-    [InlineData("admin", "12345", Globals.ROLE_USER_ID)]
-    [InlineData("admin", "12345", Globals.ROLE_ADMIN_ID)]
+    [InlineData("admin", "12345", Roles.ROLE_USER_ID)]
+    [InlineData("admin", "12345", Roles.ROLE_ADMIN_ID)]
     public async Task TestDoubleRegister(string login, string password, int roleId)
     {
         await Assert.ThrowsAsync<BadRequestException>(async () =>
@@ -72,7 +73,7 @@ public class AuthTests
     [InlineData("100500", "admin")]
     public async Task TestLogin(string login, string password)
     {
-        await userService.CreateAsync(login, password, Globals.ROLE_USER_ID);
+        await userService.CreateAsync(login, password, Roles.ROLE_USER_ID);
 
         TokenPair? tokenPair = await authService.LoginUserAsync(login, password);
 
@@ -88,7 +89,7 @@ public class AuthTests
     [InlineData("100500", "admin")]
     public async Task TestLoginWrongLogin(string login, string password)
     {
-        await userService.CreateAsync(login, password, Globals.ROLE_USER_ID);
+        await userService.CreateAsync(login, password, Roles.ROLE_USER_ID);
 
         TokenPair? tokenPair = await authService.LoginUserAsync(login + "123", password);
 
@@ -100,7 +101,7 @@ public class AuthTests
     [InlineData("100500", "admin")]
     public async Task TestLoginWrongPassword(string login, string password)
     {
-        await userService.CreateAsync(login, password, Globals.ROLE_USER_ID);
+        await userService.CreateAsync(login, password, Roles.ROLE_USER_ID);
 
         TokenPair? tokenPair = await authService.LoginUserAsync(login, password + "123");
 
@@ -112,7 +113,7 @@ public class AuthTests
     [InlineData("100500", "admin")]
     public async Task TestRefresh(string login, string password)
     {
-        await userService.CreateAsync(login, password, Globals.ROLE_USER_ID);
+        await userService.CreateAsync(login, password, Roles.ROLE_USER_ID);
 
         TokenPair? tokenPair = await authService.LoginUserAsync(login, password);
 
@@ -126,7 +127,7 @@ public class AuthTests
     [InlineData("100500", "admin")]
     public async Task TestDoubleRefresh(string login, string password)
     {
-        await userService.CreateAsync(login, password, Globals.ROLE_USER_ID);
+        await userService.CreateAsync(login, password, Roles.ROLE_USER_ID);
 
         TokenPair? tokenPair = await authService.LoginUserAsync(login, password);
 

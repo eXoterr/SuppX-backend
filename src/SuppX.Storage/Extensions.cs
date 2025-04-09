@@ -21,6 +21,8 @@ public static class Extensions
             throw new Exception("Unable to connect to db!");
         }
 
+        services.AddSingleton<DbContextOptions>(contextOptions.Options);
+
         services.AddScoped<ApplicationContext, ApplicationContext>();
 
         return services;

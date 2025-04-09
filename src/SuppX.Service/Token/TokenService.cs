@@ -6,12 +6,14 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using SuppX.Domain;
 using SuppX.Storage.Repository;
+using SuppX.Utils;
+using SuppX.Domain.Globals;
 
 namespace SuppX.Service;
 
 public class TokenService(IRefreshTokenRepository refreshTokenRepository, ILogger<TokenService> logger) : ITokenService
 {
-    const string DEFAULT_JWT = "secretKeySecretKeySecretKey!!!12345secretKey!";
+    const string JWT_SECRET_ENV = "JWT_SECRET";
 
     public TokenPair CreateTokenPair(int userId, int roleId)
     {
@@ -21,7 +23,13 @@ public class TokenService(IRefreshTokenRepository refreshTokenRepository, ILogge
             new("roleId", roleId.ToString())
         };
 
-        byte[] secret = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET") ?? DEFAULT_JWT);
+        var sigKey = Environment.GetEnvironmentVariable(JWT_SECRET_ENV) ?? DefaultEnv.JWT_SECRET;
+        if(sigKey == DefaultEnv.JWT_SECRET)
+        {
+            logger.LogWarning("default JWT signature key is used!");
+        }
+
+        byte[] secret = Encoding.UTF8.GetBytes(sigKey);
         var key = new SymmetricSecurityKey(secret);
 
         var jwtAccessToken = new JwtSecurityToken(
@@ -47,7 +55,7 @@ public class TokenService(IRefreshTokenRepository refreshTokenRepository, ILogge
 
     public JwtSecurityToken? ValidateToken(string token)
     {
-        byte[] secret = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET") ?? DEFAULT_JWT);
+        byte[] secret = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable(JWT_SECRET_ENV) ?? DefaultEnv.JWT_SECRET);
         var key = new SymmetricSecurityKey(secret);
         var validationParams = new TokenValidationParameters
         {
@@ -82,8 +90,8 @@ public class TokenService(IRefreshTokenRepository refreshTokenRepository, ILogge
         return await refreshTokenRepository.ExistsAsync(token);
     }
 
-    public async Task DeleteRefreshAsync(string token, CancellationToken cancellationToken = default)
+    public async Task<bool> TryDeleteRefreshAsync(string token, CancellationToken cancellationToken = default)
     {
-        await refreshTokenRepository.DeleteAsync(token, cancellationToken);
+        return await refreshTokenRepository.TryDeleteAsync(token, cancellationToken);
     }
 }

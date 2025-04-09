@@ -1,9 +1,10 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using SuppX.Domain;
 
 namespace SuppX.Storage.Repository;
 
-public class RefreshTokenRepository(ApplicationContext context) : IRefreshTokenRepository
+public class RefreshTokenRepository(ApplicationContext context, ILogger<RefreshTokenRepository> logger) : IRefreshTokenRepository
 {
     public async Task CreateAsync(string token, CancellationToken cancellationToken = default)
     {
@@ -21,17 +22,25 @@ public class RefreshTokenRepository(ApplicationContext context) : IRefreshTokenR
         return refreshToken is not null;
     }
 
-    public async Task DeleteAsync(string token, CancellationToken cancellationToken = default)
+    public async Task<bool> TryDeleteAsync(string token, CancellationToken cancellationToken = default)
     {
-        var toDelete = new RefreshToken
-        {
-            Value = token
-        };
         var refreshToken = await context.RefreshTokens.Where(x => x.Value == token).FirstOrDefaultAsync();
-        if (refreshToken != null)
+        if(refreshToken == null)
+        {
+            return false;
+        }
+
+        try
         {
             context.RefreshTokens.Remove(refreshToken);
             await context.SaveChangesAsync(cancellationToken);
+            return true;
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            logger.LogError("attempt to delete already deleted refresh token");
+            context.RefreshTokens.Remove(refreshToken);
+            return false;
         }
     }
 }

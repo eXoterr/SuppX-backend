@@ -20,14 +20,14 @@ public class AuthService(IUserRepository repository, ITokenService tokenService,
         User? user = await repository.GetByLoginAsync(login, cancellationToken);
         if (user is null)
         {
-            logger.LogError("user not found");
+            logger.LogWarning($"user \"{login}\" not found");
             return null;
         }
 
         bool isPasswordValid = BCrypt.Net.BCrypt.Verify(password, user.Password);
         if (!isPasswordValid)
         {
-            logger.LogError("incorrect login or passowrd");
+            logger.LogWarning($"incorrect passowrd for user \"{login}\"");
             return null;
         }
 
@@ -51,22 +51,18 @@ public class AuthService(IUserRepository repository, ITokenService tokenService,
             return null;
         }
 
-        bool parsed = int.TryParse(validatedToken.Claims.FirstOrDefault(c => c.Type == "id")?.Value, out int userId);
-        if (!parsed)
+        // TODO: Maybe ERR!
+        int.TryParse(validatedToken.Claims.FirstOrDefault(c => c.Type == "id")?.Value, out int userId);
+        int.TryParse(validatedToken.Claims.FirstOrDefault(c => c.Type == "id")?.Value, out int roleId);
+
+        bool isDeleted = await tokenService.TryDeleteRefreshAsync(refreshToken);
+
+        if(!isDeleted)
         {
-            logger.LogError("unable to parse userId from refresh token");
-            return null;
-        }
-        parsed = int.TryParse(validatedToken.Claims.FirstOrDefault(c => c.Type == "id")?.Value, out int roleId);
-        if (!parsed)
-        {
-            logger.LogError("unable to parse roleId from refresh token");
             return null;
         }
 
         var tokenPair = tokenService.CreateTokenPair(userId, roleId);
-
-        await tokenService.DeleteRefreshAsync(refreshToken);
 
         await tokenService.StoreRefreshAsync(tokenPair.RefreshToken, cancellationToken);
 

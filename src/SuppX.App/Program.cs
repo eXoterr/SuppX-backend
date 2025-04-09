@@ -17,8 +17,8 @@ internal class Program
         builder.Logging.AddConsole();
 
         builder.Services.AddConfiguredCORS();
-        builder.Services.AddRepositories();
         builder.Services.AddPostgresStorage();
+        builder.Services.AddRepositories();
         builder.Services.AddServices();
         builder.Services.AddControllers();
         builder.Services.AddConfiguredSwagger();
@@ -31,6 +31,6 @@ internal class Program
         app.MapControllers();
         app.UseSwagger();
         app.UseSwaggerUI();
-        app.Run();
+        app.Run("https://localhost:7105");
     }
 }

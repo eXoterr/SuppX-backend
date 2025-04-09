@@ -2,6 +2,7 @@ using System;
 using Microsoft.AspNetCore.Mvc;
 using SuppX.App.Models;
 using SuppX.Domain;
+using SuppX.Domain.Globals;
 using SuppX.Service;
 using SuppX.Utils;
 
@@ -23,7 +24,7 @@ public class UserController(IUserService userService, IAuthService authService) 
     {
         try
         {
-            await userService.CreateAsync(request.Login, request.Password, Globals.ROLE_USER_ID);
+            await userService.CreateAsync(request.Login, request.Password, Roles.ROLE_USER_ID);
             return Created();
         }
         catch (BadRequestException error)
