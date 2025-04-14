@@ -14,10 +14,11 @@ public class TicketController(ITicketService ticketService) : ControllerBase
     /// Creates new support request Ticket
     /// </summary>
     /// <param name="newTicket">Request, containing client id, theme and description of problem</param>
+    /// <param name="cancellationToken">Cancellation Token</param>
     /// <response code="201">Ticket created</response>
     [Authorize]
     [HttpPost]
-    public async Task<IActionResult> CreateAsync([FromBody] TicketModel newTicket)
+    public async Task<IActionResult> CreateAsync([FromBody] TicketModel newTicket, CancellationToken cancellationToken = default)
     {
         if(newTicket.Theme is null)
         {
@@ -38,7 +39,7 @@ public class TicketController(ITicketService ticketService) : ControllerBase
 
         try
         {
-            await ticketService.CreateAsync(ticket);
+            await ticketService.CreateAsync(ticket, cancellationToken);
         }
         catch (BadRequestException error)
         {
@@ -56,15 +57,16 @@ public class TicketController(ITicketService ticketService) : ControllerBase
     /// Closes opened Ticket with selected Reason
     /// </summary>
     /// <param name="closeTicket"></param>
+    /// <param name="cancellationToken">Cancellation Token</param>
     /// <returns></returns>
     [Authorize]
     [Route("closed")]
     [HttpPost]
-    public async Task<IActionResult> CloseAsync([FromBody] CloseTicketRequest closeTicket)
+    public async Task<IActionResult> CloseAsync([FromBody] CloseTicketRequest closeTicket, CancellationToken cancellationToken = default)
     {
         try
         {
-            await ticketService.CloseAsync(closeTicket.TicketId, closeTicket.ReasonId);
+            await ticketService.CloseAsync(closeTicket.TicketId, closeTicket.ReasonId, cancellationToken);
         }
         catch (BadRequestException error)
         {
@@ -83,14 +85,15 @@ public class TicketController(ITicketService ticketService) : ControllerBase
     /// </summary>
     /// <param name="offset">Offset from start, used for pagination</param>
     /// <param name="limit">Max amount of Tickets to return</param>
+    /// <param name="cancellationToken">Cancellation Token</param>
     /// <returns></returns>
     [Authorize]
     [HttpGet]
-    public async Task<IActionResult> GetTicketsAsync(int offset, int limit = 10)
+    public async Task<IActionResult> GetTicketsAsync(int offset, int limit = 10, CancellationToken cancellationToken = default)
     {
         try
         {
-            List<Ticket> tickets = await ticketService.GetAsync(offset, limit);
+            List<Ticket> tickets = await ticketService.GetAsync(offset, limit, cancellationToken);
             return Ok(tickets);
         }
         catch (BadRequestException error)
@@ -107,10 +110,11 @@ public class TicketController(ITicketService ticketService) : ControllerBase
     ///  Updates existing Ticket's properties
     /// </summary>
     /// <param name="newTicket">Updated Ticket object</param>
+    /// <param name="cancellationToken">Cancellation Token</param>
     /// <returns></returns>
     [Authorize]
     [HttpPut]
-    public async Task<IActionResult> UpdateAsync([FromBody] TicketUpdateModel newTicket)
+    public async Task<IActionResult> UpdateAsync([FromBody] TicketUpdateModel newTicket, CancellationToken cancellationToken = default)
     {
         if (newTicket.Theme is null)
         {
@@ -135,7 +139,7 @@ public class TicketController(ITicketService ticketService) : ControllerBase
 
         try
         {
-            await ticketService.UpdateAsync(ticketDTO);
+            await ticketService.UpdateAsync(ticketDTO, cancellationToken);
             return Ok();
         }
         catch (BadRequestException error)
@@ -152,15 +156,16 @@ public class TicketController(ITicketService ticketService) : ControllerBase
     /// Returns available ticket Close Reasons 
     /// </summary>
     /// <param name="limit">Limit of Close Reasons</param>
+    /// <param name="cancellationToken">Cancellation Token</param>
     /// <returns></returns>
     [Authorize]
     [Route("reasons")]
     [HttpGet]
-    public async Task<IActionResult> GetCloseReasonsAsync(int limit = 10)
+    public async Task<IActionResult> GetCloseReasonsAsync(int limit = 10, CancellationToken cancellationToken = default)
     {
         try
         {
-            return Ok(await ticketService.GetCloseReasonsAsync(limit));
+            return Ok(await ticketService.GetCloseReasonsAsync(limit, cancellationToken));
         }
         catch (BadRequestException error)
         {

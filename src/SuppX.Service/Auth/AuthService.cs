@@ -31,7 +31,7 @@ public class AuthService(IUserRepository repository, ITokenService tokenService,
             return null;
         }
 
-        var tokenPair = tokenService.CreateTokenPair(user.Id, user.RoleId);
+        var tokenPair = tokenService.CreateTokenPair(user.Id, user.RoleId, cancellationToken);
 
         await tokenService.StoreRefreshAsync(tokenPair.RefreshToken, cancellationToken);
         
@@ -40,7 +40,7 @@ public class AuthService(IUserRepository repository, ITokenService tokenService,
 
     public async Task<TokenPair?> RefreshUserAsync(string refreshToken, CancellationToken cancellationToken = default)
     {
-        var validatedToken = tokenService.ValidateToken(refreshToken);
+        var validatedToken = tokenService.ValidateToken(refreshToken, cancellationToken);
         if (validatedToken is null)
         {
             return null;
@@ -55,14 +55,14 @@ public class AuthService(IUserRepository repository, ITokenService tokenService,
         int.TryParse(validatedToken.Claims.FirstOrDefault(c => c.Type == "id")?.Value, out int userId);
         int.TryParse(validatedToken.Claims.FirstOrDefault(c => c.Type == "id")?.Value, out int roleId);
 
-        bool isDeleted = await tokenService.TryDeleteRefreshAsync(refreshToken);
+        bool isDeleted = await tokenService.TryDeleteRefreshAsync(refreshToken, cancellationToken);
 
         if(!isDeleted)
         {
             return null;
         }
 
-        var tokenPair = tokenService.CreateTokenPair(userId, roleId);
+        var tokenPair = tokenService.CreateTokenPair(userId, roleId, cancellationToken);
 
         await tokenService.StoreRefreshAsync(tokenPair.RefreshToken, cancellationToken);
 

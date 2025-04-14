@@ -8,7 +8,7 @@ public class TicketService(ITicketRepository ticketRepository, IUserRepository u
 {
     public async Task CreateAsync(Ticket ticket, CancellationToken cancellationToken = default)
     {
-        var isUserExists = await userRepository.GetByIdAsync(ticket.ClientId) is not null;
+        var isUserExists = await userRepository.GetByIdAsync(ticket.ClientId, cancellationToken) is not null;
         if (!isUserExists)
         {
             throw new BadRequestException("specified ClientId does not exists");
@@ -34,7 +34,7 @@ public class TicketService(ITicketRepository ticketRepository, IUserRepository u
             throw new BadRequestException("This ticket is already closed");
         }
 
-        CloseReason? reason = await ticketRepository.GetCloseReasonByIdAsync(reasonId);
+        CloseReason? reason = await ticketRepository.GetCloseReasonByIdAsync(reasonId, cancellationToken);
         if (reason is null)
         {
             throw new BadRequestException("Specified CloseReasonId is not found");
@@ -77,7 +77,7 @@ public class TicketService(ITicketRepository ticketRepository, IUserRepository u
         await ticketRepository.UpdateAsync(ticket, cancellationToken);
     }
 
-    public async Task<List<Ticket>> GetAsync(int offset, int limit, CancellationToken cancellationToken)
+    public async Task<List<Ticket>> GetAsync(int offset, int limit, CancellationToken cancellationToken = default)
     {
         if (limit < 0)
         {
@@ -90,7 +90,7 @@ public class TicketService(ITicketRepository ticketRepository, IUserRepository u
         return await ticketRepository.GetTicketsAsync(offset, limit, cancellationToken);
     }
 
-    public async Task<List<CloseReason>> GetCloseReasonsAsync(int limit, CancellationToken cancellationToken)
+    public async Task<List<CloseReason>> GetCloseReasonsAsync(int limit, CancellationToken cancellationToken = default)
     {
         if (limit < 0)
         {

@@ -12,19 +12,19 @@ public class RefreshTokenRepository(ApplicationContext context, ILogger<RefreshT
         {
             Value = token
         };
-        await context.RefreshTokens.AddAsync(refreshToken);
-        await context.SaveChangesAsync();
+        await context.RefreshTokens.AddAsync(refreshToken, cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task<bool> ExistsAsync(string token, CancellationToken cancellationToken = default)
     {
-        RefreshToken? refreshToken = await context.RefreshTokens.FirstOrDefaultAsync(x => x.Value == token);
+        RefreshToken? refreshToken = await context.RefreshTokens.FirstOrDefaultAsync(x => x.Value == token, cancellationToken);
         return refreshToken is not null;
     }
 
     public async Task<bool> TryDeleteAsync(string token, CancellationToken cancellationToken = default)
     {
-        var refreshToken = await context.RefreshTokens.Where(x => x.Value == token).FirstOrDefaultAsync();
+        var refreshToken = await context.RefreshTokens.Where(x => x.Value == token).FirstOrDefaultAsync(cancellationToken);
         if(refreshToken == null)
         {
             return false;

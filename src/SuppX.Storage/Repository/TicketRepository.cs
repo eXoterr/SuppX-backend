@@ -38,7 +38,7 @@ public class TicketRepository(ApplicationContext context) : ITicketRepository
         return await context.CloseReasons
                             .OrderBy(x => x.Id)
                             .Take(limit)
-                            .ToListAsync();
+                            .ToListAsync(cancellationToken);
     }
 
     public async Task<CloseReason?> GetCloseReasonByIdAsync(int id, CancellationToken cancellationToken = default)

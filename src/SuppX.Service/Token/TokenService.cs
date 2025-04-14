@@ -15,7 +15,7 @@ public class TokenService(IRefreshTokenRepository refreshTokenRepository, ILogge
 {
     const string JWT_SECRET_ENV = "JWT_SECRET";
 
-    public TokenPair CreateTokenPair(int userId, int roleId)
+    public TokenPair CreateTokenPair(int userId, int roleId, CancellationToken cancellationToken)
     {
         var claims = new List<Claim>
         {
@@ -53,7 +53,7 @@ public class TokenService(IRefreshTokenRepository refreshTokenRepository, ILogge
         };
     }
 
-    public JwtSecurityToken? ValidateToken(string token)
+    public JwtSecurityToken? ValidateToken(string token, CancellationToken cancellationToken)
     {
         byte[] secret = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable(JWT_SECRET_ENV) ?? DefaultEnv.JWT_SECRET);
         var key = new SymmetricSecurityKey(secret);
@@ -82,12 +82,12 @@ public class TokenService(IRefreshTokenRepository refreshTokenRepository, ILogge
 
     public async Task StoreRefreshAsync(string token, CancellationToken cancellationToken = default)
     {
-        await refreshTokenRepository.CreateAsync(token);
+        await refreshTokenRepository.CreateAsync(token, cancellationToken);
     }
 
     public async Task<bool> IsRefreshExistsAsync(string token, CancellationToken cancellationToken = default)
     {
-        return await refreshTokenRepository.ExistsAsync(token);
+        return await refreshTokenRepository.ExistsAsync(token, cancellationToken);
     }
 
     public async Task<bool> TryDeleteRefreshAsync(string token, CancellationToken cancellationToken = default)
